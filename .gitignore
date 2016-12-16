@@ -1,12 +1,54 @@
-*.class
+# Istället för att ange vad som ska exkluderas så definieras
+# istället explicit vad som ska inkluderas. Detta för att så
+# långt det är möjligt förhindra att onödiga filer hamnar i
+# versionhanteringssystemet.
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Ignorera initialt alla filer
+# -----------------------------------------------------------------
 
-# Package Files #
-*.jar
-*.war
-*.ear
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Explicita undantag för Maven moduler
+# -----------------------------------------------------------------
+
+# App modules
+
+# Db module
+
+# Explicita undantag för vissa resurser, var de än befinner sig
+# -----------------------------------------------------------------
+
+# Maven
+target/
+!pom.xml
+
+# Git
+!.gitignore
+
+# Ignorera alltid vissa resurser, var de än befinner sig
+# -----------------------------------------------------------------
+*.orig
+*.bak
+*.old
+app.log
+
+# Intellij
+*.iml
+.idea/
+
+# Eclipse
+bin/
+.project
+.classpath
+.settings/
+
+# netbeans
+nb-configuration.xml
+
+# CVS
+.cvsignore
+CVS/
+
+# OS X
+.DS_Store
+
+/db/target/
