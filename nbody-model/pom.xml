@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>nmodel</groupId>
-        <artifactId>nmodel</artifactId>
+        <groupId>nbody</groupId>
+        <artifactId>nbody</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 

@@ -89,4 +89,20 @@ public class BodyTest {
         assertTrue(force.x < 0.00001);
         assertTrue(force.y < 0.00001);
     }
+
+    @Test
+    public void calculateGravitationalForceBetweenSunAndEarth() {
+        Body sun = new Body();
+        Vector2D locationSun = new Vector2D(0, 0);
+        sun.location = locationSun;
+        sun.mass = CelestialBody.SUN.mass;
+
+        Body earth = new Body();
+        Vector2D locationEarth = new Vector2D(CelestialBody.EARTH.meanDistanceToGravitationalCenter, 0);
+        earth.location = locationEarth;
+        earth.mass = CelestialBody.EARTH.mass;
+
+        Vector2D force = earth.calculateGravitationalForce(sun);
+        assertTrue(force.x < -1e22);
+    }
 }
