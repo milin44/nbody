@@ -1,5 +1,7 @@
 package nbody.model;
 
+import org.junit.Before;
+
 /**
  * Implementation of a generic body that can move in a two-dimensional coordinate system.
  *
@@ -43,8 +45,13 @@ public class Body {
         acceleration.add(accByForce);
     }
 
+
+    public void addGravityForce(Body other) {
+        addForce(calculateGravitationalForce(other));
+    }
+
     /**
-     * Calculates the gravitational force between this body and another body and adds the resulting force.
+     * Calculates the gravitational force between this body and another body.
      *
      * Newton's law of universal gravitation: F = G * (m1 * m2)/r²
      *  - F = force between bodies in newtons. The force is a vector pointing towards the current body (attracting)
@@ -54,22 +61,21 @@ public class Body {
      *  - r = distance between the centers of the masses in meters
      *
      *
-     * @param otherBody
+     * @param other
      */
-    public void addGravityForce(Body otherBody) {
+    protected Vector2D calculateGravitationalForce(Body other) {
         // get direction vector
         Vector2D directionVect = new Vector2D(this.location);
-        directionVect.sub(otherBody.location).normalize().mul(-1);
+        directionVect.sub(other.location).normalize().mul(-1);
 
         // distance between bodies
-        double r = this.location.distance(otherBody.location);
+        double r = this.location.distance(other.location);
 
         // calculate force
         Vector2D grativationalForce = new Vector2D(directionVect);
-        grativationalForce.mul(Physics.G).mul(this.mass).mul(otherBody.mass).div(r*r);
+        grativationalForce.mul(Physics.G).mul(this.mass).mul(other.mass).div(r*r);
 
-        // add force
-        addForce(grativationalForce);
+        return grativationalForce;
     }
 
 

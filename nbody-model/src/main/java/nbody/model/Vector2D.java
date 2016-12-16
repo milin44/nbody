@@ -84,4 +84,9 @@ public class Vector2D {
         return Math.sqrt(distanceSquared(other));
     }
 
+    @Override
+    public String toString() {
+        return String.format("x = %f, y = %f", x, y);
+    }
+
 }
