@@ -17,10 +17,24 @@ public class Body {
     /** radius in kilometers */
     public double radius;
 
+    public String name;
+
+
     public Body() {
+        if (acceleration == null) {
+            acceleration = new Vector2D();
+        }
+        if (velocity == null) {
+            velocity = new Vector2D();
+        }
+        if (location == null) {
+            location = new Vector2D();
+        }
+
     }
 
     public Body(Vector2D location, Vector2D velocity, double radius, double mass) {
+        this();
         this.location = location;
         this.velocity = velocity;
         this.radius = radius;
@@ -39,15 +53,15 @@ public class Body {
      *
      * @param force
      */
-    public void addForce(Vector2D force) {
+    public void addForce(Vector2D force, double timeSlice) {
         Vector2D accByForce = new Vector2D(force);
         accByForce.div(mass);
-        acceleration.add(accByForce);
+        acceleration.add(accByForce).mul(timeSlice);
     }
 
 
-    public void addGravityForce(Body other) {
-        addForce(calculateGravitationalForce(other));
+    public void addGravityForce(Body other, double timeSlice) {
+        addForce(calculateGravitationalForce(other), timeSlice);
     }
 
     /**
@@ -79,10 +93,10 @@ public class Body {
     }
 
 
-    public void update() {
+    public void update(double timeSlice) {
         updateAcceleration();
         updateVelocity();
-        updateLocation();
+        updateLocation(timeSlice);
     }
 
     protected void updateAcceleration() {}
@@ -91,7 +105,17 @@ public class Body {
         velocity.add(acceleration);
     }
 
-    protected void updateLocation() {
-        location.add(velocity);
+    protected void updateLocation(double timeSlice) {
+        location.add(velocity.mul(timeSlice));
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(String.format("\n%s", name)).append('\n');
+        buf.append(String.format("acc_x = %f, acc_y = %f", acceleration.x, acceleration.y)).append('\n');
+        buf.append(String.format("vel_x = %f, vel_y = %f", velocity.x, velocity.y)).append('\n');
+        buf.append(String.format("loc_x = %f, loc_y = %f", location.x, location.y)).append('\n');
+        return buf.toString();
     }
 }

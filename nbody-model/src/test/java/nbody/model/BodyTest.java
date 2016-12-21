@@ -92,17 +92,36 @@ public class BodyTest {
 
     @Test
     public void calculateGravitationalForceBetweenSunAndEarth() {
-        Body sun = new Body();
-        Vector2D locationSun = new Vector2D(0, 0);
-        sun.location = locationSun;
-        sun.mass = CelestialBody.SUN.mass;
+        SolarSystem solarSystem = new SolarSystem();
+        Body sun = solarSystem.createSun();
+        Body earth = solarSystem.createEarth();
 
-        Body earth = new Body();
-        Vector2D locationEarth = new Vector2D(CelestialBody.EARTH.meanDistanceToGravitationalCenter, 0);
-        earth.location = locationEarth;
-        earth.mass = CelestialBody.EARTH.mass;
+        Vector2D gravitationalForceEarth = earth.calculateGravitationalForce(sun);
+        assertTrue(gravitationalForceEarth.x > 1e22);
 
-        Vector2D force = earth.calculateGravitationalForce(sun);
-        assertTrue(force.x < -1e22);
+        Vector2D gravitationalForceSun = sun.calculateGravitationalForce(earth);
+        assertTrue(gravitationalForceSun.x < 1e22);
+
+        assertEquals(Math.abs(gravitationalForceSun.x), Math.abs(gravitationalForceEarth.x), .001);
+    }
+
+    @Test
+    public void updateGravitationalForceBetweenSunAndEarth() {
+        final double timeSlice = 1e5;
+        SolarSystem solarSystem = new SolarSystem();
+        Body sun = solarSystem.createSun();
+        Body earth = solarSystem.createEarth();
+
+        earth.addGravityForce(sun, timeSlice);
+        sun.addGravityForce(earth, timeSlice);
+
+        assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
+
+        earth.update(timeSlice);
+        sun.update(timeSlice);
+
+        assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
+        assertTrue(Math.abs(sun.velocity.x) < Math.abs(earth.velocity.x));
+
     }
 }
