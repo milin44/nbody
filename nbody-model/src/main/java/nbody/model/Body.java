@@ -1,9 +1,8 @@
 package nbody.model;
 
-import org.junit.Before;
-
 /**
- * Implementation of a generic body that can move in a two-dimensional coordinate system.
+ * Implementation of a generic body that moves in a two-dimensional coordinate system.
+ * The movement is caused by applying forces on the body.
  *
  */
 public class Body {
@@ -30,7 +29,6 @@ public class Body {
         if (location == null) {
             location = new Vector2D();
         }
-
     }
 
     public Body(Vector2D location, Vector2D velocity, double radius, double mass) {
@@ -41,6 +39,18 @@ public class Body {
         this.mass = mass;
     }
 
+    public Vector2D getAcceleration() {
+        return acceleration;
+    }
+
+    public Vector2D getVelocity() {
+        return velocity;
+    }
+
+    public Vector2D getLocation() {
+        return location;
+    }
+
     /**
      * Adds a force vector to the body wich implies a change in acceleration depending on mass.
      *
@@ -49,19 +59,56 @@ public class Body {
      *  - F = force acting on the body in newtons
      *  - m = mass of body in kilograms
      *  - a = acceleration in m/s²
-
      *
      * @param force
+     *
      */
-    public void addForce(Vector2D force, double timeSlice) {
+    public void addForce(Vector2D force) {
         Vector2D accByForce = new Vector2D(force);
         accByForce.div(mass);
-        acceleration.add(accByForce).mul(timeSlice);
+        acceleration.add(accByForce);
     }
 
 
-    public void addGravityForce(Body other, double timeSlice) {
-        addForce(calculateGravitationalForce(other), timeSlice);
+    /**
+     * Calculates the gravitational force between this body and another body and
+     * accumulates the force.
+     *
+     * @param other
+     */
+    public void addGravityForce(Body other) {
+        addForce(calculateGravitationalForce(other));
+    }
+
+    /**
+     * Resets acceleration vector so that addGravityForce() can accumulate forces during a new timeslice.
+     */
+    public void resetAcceleration() {
+        acceleration = new Vector2D();
+    }
+
+    /**
+     * Calculates a new velocity and location for the body for current acceleration and
+     * a given timeslice.
+     *
+     * Note that the velocity calculated by applying the acceleration during the timeslice
+     * will be the final velocity. To calculate the new location we will use the average
+     * velocity instead in order to get a better approximation.
+     *
+     * The accuracy of the calculated velocity and location will be dependent on how how long
+     * the timeslice is and how constant the acceleration is during the timeslice.
+     *
+     * @param timeSlice the timeslice for which current acceleration should affect the body.
+     */
+    public void updateVelocityAndLocation(double timeSlice) {
+        // caluclate final velocity when the time slice has occurred
+        Vector2D oldVelocity = new Vector2D(this.velocity);
+        updateVelocity(timeSlice);
+
+        // updateVelocityAndLocation location using average velocity
+        Vector2D changedVelocityAverage = new Vector2D(this.velocity).sub(oldVelocity).div(2.0);
+        Vector2D averageVelocity = new Vector2D(oldVelocity).add(changedVelocityAverage);
+        updateLocation(timeSlice, averageVelocity);
     }
 
     /**
@@ -92,21 +139,25 @@ public class Body {
         return grativationalForce;
     }
 
-
-    public void update(double timeSlice) {
-        updateAcceleration();
-        updateVelocity();
-        updateLocation(timeSlice);
+    /**
+     * Calculates the final velocity when current accumulated acceleration has been applied during a timeslice.
+     *
+     * @param timeSlice
+     */
+    protected void updateVelocity(double timeSlice) {
+        Vector2D velocityByAcc = new Vector2D(acceleration).mul(timeSlice);
+        velocity.add(velocityByAcc);
     }
 
-    protected void updateAcceleration() {}
-
-    protected void updateVelocity() {
-        velocity.add(acceleration);
-    }
-
-    protected void updateLocation(double timeSlice) {
-        location.add(velocity.mul(timeSlice));
+    /**
+     * Calulates a new location given that an velocity has been applied a given timeslice.
+     *
+     * @param timeSlice the timeslice for which given average velocity should affect the body.
+     * @param averageVelocity the average velocity during the timeslice
+     */
+    protected void updateLocation(double timeSlice, Vector2D averageVelocity) {
+        Vector2D locationByVelocity = new Vector2D(averageVelocity).mul(timeSlice);
+        location.add(locationByVelocity);
     }
 
     @Override

@@ -1,0 +1,18 @@
+Background
+
+* Newtons 2:nd law:
+ F = ma, a force makes a body accelerate.
+
+ No force means no acceleration and since also slowing down is an negative acceleration this implies that a body will continue its movement if no force is exerted (Newtons 1:st law)
+
+ Force and acceleration have direction which can be described using their components in x,y,z directions (vectors).
+
+ Newtons 2:ns law can therefore be stated as a net-force (the vector sum of all forces) makes a body accelerate in a specifik direction.
+
+ \vec{F}=m\vec{a}
+
+
+ * Gravity
+ For celestial bodies we can ignore air-resistance and friction. We only deal with gravity as the cause of acceleration.
+
+ * Single body/single force movement

@@ -48,13 +48,39 @@ public class NBodyFxGuiTest {
     @Test
     public void testIter() {
         SolarSystem solarSystem = new SolarSystem();
-        solarSystem.timeMultiplier = 50;
-        for (int i = 0; i < 50; i++) {
+
+        double time = 0;
+        for (int i = 0; i < 100; i++) {
             Body earth = solarSystem.getBody(SolarSystem.EARTH_NAME).get();
-            System.out.println("nr: " + i + ", x: " + gui.model_x_to_pixels(earth.location.x));
             System.out.println(earth);
-            solarSystem.update();
+            System.out.println("nr: " + i + ", time: " + time + ", xpixels: " + gui.model_x_to_pixels(earth.location.x));
+            System.out.println("------------------------------------------------------------------------------");
+
+            /*
+
+            Body sun = solarSystem.getBody(SolarSystem.SUN_NAME).get();
+            System.out.println(sun);
+            System.out.println("nr: " + i + ", time: " + time + ", xpixels: " + gui.model_x_to_pixels(sun.location.x));
+            System.out.println("#################################################################################3");
+            */
+
+            time += solarSystem.update(30000);
         }
+
+
+
+
+/*
+        solarSystem.timeMultiplier = 200;
+        double time = 0;
+        for (int i = 0; i < 6; i++) {
+            Body earth = solarSystem.getBody(SolarSystem.EARTH_NAME).get();
+            System.out.println(earth);
+            System.out.println("nr: " + i + ", time: " + time + ", xpixels: " + gui.model_x_to_pixels(earth.location.x));
+            System.out.println("------------------------------------------------------------------------------");
+            time += solarSystem.updateVelocityAndLocation();
+        }
+*/
 
     }
 

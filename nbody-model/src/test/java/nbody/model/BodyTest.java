@@ -14,13 +14,10 @@ public class BodyTest {
     @Before
     public void setUp() {
         body = new Body();
-        Vector2D location = new Vector2D(0, 0);
-        body.location = location;
+        body.location = new Vector2D(0, 0);
         body.mass = 1000000;
-
         other = new Body();
-        Vector2D locationOther = new Vector2D(0, 0);
-        other.location = locationOther;
+        other.location = new Vector2D(0, 0);
         other.mass = 1000000;
     }
 
@@ -45,7 +42,7 @@ public class BodyTest {
         assertEquals(0, force.y, 0.01);
         assertTrue(force.x < 0.0);
     }
-
+    
     @Test
     public void calculateGravitationalForceAlongPositiveVerticalAxis() {
         body.location.x = 0;
@@ -112,13 +109,14 @@ public class BodyTest {
         Body sun = solarSystem.createSun();
         Body earth = solarSystem.createEarth();
 
-        earth.addGravityForce(sun, timeSlice);
-        sun.addGravityForce(earth, timeSlice);
+        earth.addGravityForce(sun);
+        sun.addGravityForce(earth);
+        solarSystem.update(timeSlice);
 
         assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
 
-        earth.update(timeSlice);
-        sun.update(timeSlice);
+        earth.updateVelocityAndLocation(timeSlice);
+        sun.updateVelocityAndLocation(timeSlice);
 
         assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
         assertTrue(Math.abs(sun.velocity.x) < Math.abs(earth.velocity.x));

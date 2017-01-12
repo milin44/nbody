@@ -24,8 +24,10 @@ import java.util.List;
 public class NBodyFxGui extends Application {
     public static final double GUI_RADIUS = 300;
     public static final double GUI_DIAMETER = GUI_RADIUS *2;
+    public static final double TIME_SLICE = 30000;
 
     private SolarSystem solarSystem;
+    private double elapsedTime = 0;
 
     @Override
     public void start(Stage theStage) {
@@ -42,8 +44,8 @@ public class NBodyFxGui extends Application {
         timeline.setCycleCount(Timeline.INDEFINITE);
 
         KeyFrame kf = new KeyFrame(
-                //Duration.seconds(0.017),                // 60 FPS
-                Duration.seconds(0.5),                // 2 FPS
+                Duration.seconds(0.017),                // 60 FPS
+                //Duration.seconds(0.5),                // 2 FPS
                 new EventHandler<ActionEvent>() {
                     public void handle(ActionEvent ae) {
                         updateFrame(gc);
@@ -63,7 +65,8 @@ public class NBodyFxGui extends Application {
             double circleRadius = 5;
             gc.fillOval(model_x_to_pixels(body.location.x) - circleRadius, model_y_to_pixels(body.location.y) - circleRadius, circleRadius * 2, circleRadius * 2);
         }
-        solarSystem.update();
+        solarSystem.update(TIME_SLICE);
+        elapsedTime += TIME_SLICE;
     }
 
     protected void createBodies() {
@@ -82,7 +85,7 @@ public class NBodyFxGui extends Application {
     /**
      * Converts a model a y coordinate in cartasian coordinates to a vertical position in the gui.
      *
-     * Javafx coordinates have origo top-left while cartesian coordinates have origo bottom-left.
+     * Javafx coordinates have origin top-left while cartesian coordinates have origin bottom-left.
      * @param y
      * @return
      */
