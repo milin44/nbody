@@ -18,8 +18,8 @@ public class SolarSystemTest {
         final double timeSlice = 1e5;
         SolarSystem solarSystem = new SolarSystem();
         solarSystem.update(timeSlice);
-        earth = solarSystem.getBody(SolarSystem.EARTH_NAME).get();
-        sun = solarSystem.getBody(SolarSystem.SUN_NAME).get();
+        earth = solarSystem.getBody(CelestialBody.EARTH.celestialName).get();
+        sun = solarSystem.getBody(CelestialBody.SUN.celestialName).get();
     }
 
     @Test

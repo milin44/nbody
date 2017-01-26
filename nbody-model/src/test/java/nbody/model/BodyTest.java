@@ -90,8 +90,8 @@ public class BodyTest {
     @Test
     public void calculateGravitationalForceBetweenSunAndEarth() {
         SolarSystem solarSystem = new SolarSystem();
-        Body sun = solarSystem.createSun();
-        Body earth = solarSystem.createEarth();
+        Body sun = CelestialBody.SUN.getAsBody(0);
+        Body earth = CelestialBody.EARTH.getAsBody(0);
 
         Vector2D gravitationalForceEarth = earth.calculateGravitationalForce(sun);
         assertTrue(gravitationalForceEarth.x > 1e22);
@@ -106,8 +106,8 @@ public class BodyTest {
     public void updateGravitationalForceBetweenSunAndEarth() {
         final double timeSlice = 1e5;
         SolarSystem solarSystem = new SolarSystem();
-        Body sun = solarSystem.createSun();
-        Body earth = solarSystem.createEarth();
+        Body sun = CelestialBody.SUN.getAsBody(0);
+        Body earth = CelestialBody.EARTH.getAsBody(0);
 
         earth.addGravityForce(sun);
         sun.addGravityForce(earth);
