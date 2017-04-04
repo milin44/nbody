@@ -1,6 +1,7 @@
 package nbody.model;
 
 
+import static java.lang.Math.sqrt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BodyTest {
+    private final double EXPECTED_FORCE = 6673;
+    private final double BODY_MASS = 1e10;
+    private final double BODY_DISTANCE = 1e3;
     private Body body;
     private Body other;
 
@@ -15,111 +19,72 @@ public class BodyTest {
     public void setUp() {
         body = new Body();
         body.location = new Vector2D(0, 0);
-        body.mass = 1000000;
+        body.mass = BODY_MASS;
         other = new Body();
         other.location = new Vector2D(0, 0);
-        other.mass = 1000000;
+        other.mass = BODY_MASS;
     }
 
     @Test
-    public void calculateGravitationalForceAlongPositiveHorizontalAxis() {
+    public void calculateGravitationalForceAlongHorizontalAxis() {
         body.location.x = 0;
         body.location.y = 0;
-        other.location.x = 1000;
+        other.location.x = BODY_DISTANCE;
         other.location.y = 0;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertEquals(0, force.y, 0.01);
-        assertTrue(force.x > 0.00001);
+
+        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        assertEquals(0, bodyForce.y, 0.01);
+        assertEquals(EXPECTED_FORCE, bodyForce.x, 0.01);
+
+        Vector2D otherForce = body.calculateGravitationalForce(other);
+        assertEquals(0, otherForce.y, 0.01);
+        assertEquals(EXPECTED_FORCE, otherForce.x, 0.01);
     }
 
     @Test
-    public void calculateGravitationalForceAlongNegativeHorizontalAxis() {
-        body.location.x = 1000;
-        body.location.y = 0;
-        other.location.x = 0;
-        other.location.y = 0;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertEquals(0, force.y, 0.01);
-        assertTrue(force.x < 0.0);
-    }
-    
-    @Test
-    public void calculateGravitationalForceAlongPositiveVerticalAxis() {
+    public void calculateGravitationalForceAlongVerticalAxis() {
         body.location.x = 0;
         body.location.y = 0;
         other.location.x = 0;
-        other.location.y = 1000;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertEquals(0, force.x, 0.01);
-        assertTrue(force.y > 0.00001);
-    }
+        other.location.y = BODY_DISTANCE;
 
-    @Test
-    public void calculateGravitationalForceAlongNegativeVerticalAxis() {
-        body.location.x = 0;
-        body.location.y = 1000;
-        other.location.x = 0;
-        other.location.y = 0;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertEquals(0, force.x, 0.01);
-        assertTrue(force.y < 0.00001);
+        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        assertEquals(0, bodyForce.x, 0.01);
+        assertEquals(EXPECTED_FORCE, bodyForce.y, 0.01);
+
+        Vector2D otherForce = body.calculateGravitationalForce(other);
+        assertEquals(0, otherForce.x, 0.01);
+        assertEquals(EXPECTED_FORCE, otherForce.y, 0.01);
     }
 
     @Test
     public void calculateGravitationalForceOtherAt45Deg() {
         body.location.x = 0;
         body.location.y = 0;
-        other.location.x = 1000;
-        other.location.y = 1000;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertTrue(force.x > 0.00001);
-        assertTrue(force.y > 0.00001);
+        other.location.x = Math.sin(Math.toRadians(45)) * BODY_DISTANCE;
+        other.location.y = Math.cos(Math.toRadians(45)) * BODY_DISTANCE;
+        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        assertEquals(EXPECTED_FORCE, bodyForce.length(), 0.01);
     }
 
     @Test
     public void calculateGravitationalForceOtherAt225Deg() {
-        body.location.x = 1000;
-        body.location.y = 1000;
+        body.location.x = Math.sin(Math.toRadians(225)) * BODY_DISTANCE;
+        body.location.y = Math.cos(Math.toRadians(225)) * BODY_DISTANCE;;
         other.location.x = 0;
         other.location.y = 0;
-        Vector2D force = body.calculateGravitationalForce(other);
-        assertTrue(force.x < 0.00001);
-        assertTrue(force.y < 0.00001);
+        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        assertEquals(EXPECTED_FORCE, bodyForce.length(), 0.01);
     }
 
     @Test
-    public void calculateGravitationalForceBetweenSunAndEarth() {
-        SolarSystem solarSystem = new SolarSystem();
-        Body sun = CelestialBody.SUN.getAsBody(0);
-        Body earth = CelestialBody.EARTH.getAsBody(0);
-
-        Vector2D gravitationalForceEarth = earth.calculateGravitationalForce(sun);
-        assertTrue(gravitationalForceEarth.x > 1e22);
-
-        Vector2D gravitationalForceSun = sun.calculateGravitationalForce(earth);
-        assertTrue(gravitationalForceSun.x < 1e22);
-
-        assertEquals(Math.abs(gravitationalForceSun.x), Math.abs(gravitationalForceEarth.x), .001);
+    public void calculateGravitationalAccelerationForEarth() {
+        Body earth = new Body();
+        earth.mass = CelestialBody.EARTH.mass;
+        Body oneKg = new Body();
+        oneKg.location = new Vector2D(0, CelestialBody.EARTH.radius);
+        oneKg.mass = 1;
+        assertEquals(9.82, Math.abs(oneKg.calculateGravitationalForce(earth).length()), 0.01);
     }
 
-    @Test
-    public void updateGravitationalForceBetweenSunAndEarth() {
-        final double timeSlice = 1e5;
-        SolarSystem solarSystem = new SolarSystem();
-        Body sun = CelestialBody.SUN.getAsBody(0);
-        Body earth = CelestialBody.EARTH.getAsBody(0);
-
-        earth.addGravityForce(sun);
-        sun.addGravityForce(earth);
-        solarSystem.update(timeSlice);
-
-        assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
-
-        earth.updateVelocityAndLocation(timeSlice);
-        sun.updateVelocityAndLocation(timeSlice);
-
-        assertTrue(Math.abs(sun.acceleration.x) < Math.abs(earth.acceleration.x));
-        assertTrue(Math.abs(sun.velocity.x) < Math.abs(earth.velocity.x));
-
-    }
 }

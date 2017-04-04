@@ -75,16 +75,22 @@ public class NBodyFxGui extends Application {
             //System.out.println("xm:" + body.location.x + ", ym:" + body.location.y);
             //System.out.println("xg:" + model_x_to_pixels(body.location.x) + ", yg:" + model_y_to_pixels(body.location.y));
             double circleRadius = 2;
+            /*
             if (body.name.equals(CelestialBody.MOON.celestialName)) {
                 gc.setFill(Color.RED);
                 circleRadius = 2;
-            } else
+            } else {
                 gc.setFill(Color.BLACK);
-
+            }
+            */
             gc.fillOval(transformer.modelToOtherX(body.location.x) - circleRadius, transformer.modelToOtherY(body.location.y) - circleRadius, circleRadius * 2, circleRadius * 2);
         }
-        solarSystem.update(TIME_SLICE);
-        elapsedTime += TIME_SLICE;
+
+        //if (elapsedTime == 0) {
+            solarSystem.update(TIME_SLICE);
+            elapsedTime += TIME_SLICE;
+        //}
+
         timeLabel.setText(getElapsedTimeAsString(this.elapsedTime));
     }
 

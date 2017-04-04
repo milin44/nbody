@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SolarSystem extends BodySystem {
-    public static double SOLAR_SYSTEM_RADIUS = CelestialBody.EARTH.meanDistanceToGravitationalCenter * 2;
+    public static double SOLAR_SYSTEM_RADIUS = CelestialBody.EARTH.location.x * 2;
+    //private static CelestialBody[] CELESTIAL_BODIES_IN_SYSTEM = new CelestialBody[] {CelestialBody.EARTH, CelestialBody.SUN, CelestialBody.MOON};
     private static CelestialBody[] CELESTIAL_BODIES_IN_SYSTEM = new CelestialBody[] {CelestialBody.EARTH, CelestialBody.SUN};
 
     public SolarSystem() {
