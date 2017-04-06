@@ -27,11 +27,12 @@ public class NBodyFxGui extends Application {
     /**
      * Number of seconds to update the model with for each iteration
      */
-    public static final double TIME_SLICE = 60000/4;
+    //public static final double TIME_SLICE = 60000/4;
+    public static final double TIME_SLICE = 1;
 
     public static final int BOTTOM_AREA_HEIGHT = 100;
-    //public static final double SCALE = 3e8;
-    public static final double SCALE = 5e8;
+    public static final double SCALE = 3e6;
+    //public static final double SCALE = 5e8;
 
     private static final int SEC_IN_MINUTE = 60;
     private static final int SEC_IN_HOUR = SEC_IN_MINUTE * 60;
@@ -51,6 +52,8 @@ public class NBodyFxGui extends Application {
     public void start(Stage stage) {
         createBodies();
         transformer.setScale(SCALE);
+        transformer.setOriginXForOther(500);
+        transformer.setOriginYForOther(500);
         GraphicsContext gc = createGui(stage);
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -72,17 +75,18 @@ public class NBodyFxGui extends Application {
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (Body body : solarSystem.getBodies()) {
-            //System.out.println("xm:" + body.location.x + ", ym:" + body.location.y);
-            //System.out.println("xg:" + model_x_to_pixels(body.location.x) + ", yg:" + model_y_to_pixels(body.location.y));
+            System.out.println(body.toString());
+            System.out.println("px:" + transformer.modelToOtherX(body.location.x) + ", py:" + transformer.modelToOtherY(body.location.y));
+            System.out.println();
             double circleRadius = 2;
-            /*
+
             if (body.name.equals(CelestialBody.MOON.celestialName)) {
                 gc.setFill(Color.RED);
                 circleRadius = 2;
             } else {
                 gc.setFill(Color.BLACK);
             }
-            */
+
             gc.fillOval(transformer.modelToOtherX(body.location.x) - circleRadius, transformer.modelToOtherY(body.location.y) - circleRadius, circleRadius * 2, circleRadius * 2);
         }
 

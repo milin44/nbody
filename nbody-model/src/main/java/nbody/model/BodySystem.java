@@ -31,11 +31,13 @@ public class BodySystem {
             for (int j = 0; j < bodies.size(); j++) {
                 Body other = bodies.get(j);
                 if (other != current) {
-                    current.addGravityForce(other);
+                    current.addAccelerationByGravityForce(other);
                 }
             }
-            current.updateVelocityAndLocation(timeSlice);
         }
+        // update velocity and location for each body
+        bodies.stream().forEach(i -> i.updateVelocityAndLocation(timeSlice)) ;
+
         return timeSlice;
     }
 

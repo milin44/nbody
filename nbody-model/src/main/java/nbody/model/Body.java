@@ -63,11 +63,12 @@ public class Body {
      * @param force
      *
      */
-    public void addForce(Vector2D force) {
+    public void addAccelerationByForce(Vector2D force) {
         Vector2D accByForce = new Vector2D(force);
         accByForce.div(mass);
         acceleration.add(accByForce);
     }
+
 
 
     /**
@@ -76,12 +77,12 @@ public class Body {
      *
      * @param other
      */
-    public void addGravityForce(Body other) {
-        addForce(calculateGravitationalForce(other));
+    public void addAccelerationByGravityForce(Body other) {
+        addAccelerationByForce(calculateGravitationalForce(other));
     }
 
     /**
-     * Resets acceleration vector so that addGravityForce() can accumulate forces during a new timeslice.
+     * Resets acceleration vector so that addAccelerationByGravityForce() can accumulate forces during a new timeslice.
      */
     public void resetAcceleration() {
         acceleration = new Vector2D();
@@ -164,6 +165,7 @@ public class Body {
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(String.format("\n%s", name)).append('\n');
+        buf.append(String.format("mass = %f", mass)).append('\n');
         buf.append(String.format("acc_x = %f, acc_y = %f", acceleration.x, acceleration.y)).append('\n');
         buf.append(String.format("vel_x = %f, vel_y = %f", velocity.x, velocity.y)).append('\n');
         buf.append(String.format("loc_x = %f, loc_y = %f", location.x, location.y)).append('\n');

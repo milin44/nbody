@@ -1,12 +1,19 @@
 package nbody.model;
 
+// https://nssdc.gsfc.nasa.gov/planetary/factsheet
 public enum CelestialBody {
     SUN("Sun", 1.98855e30, 695700000.0, 0, 0, 0),
-    EARTH("Earth", 5.972e24, 6371000.0, 149597870700.0, 0.0, 30000.0),
-    JUPITER("Jupiter", 1.898e274, 69911000.0, 7785e8, 0 , 13000.06),
-    //MOON("Moon", 7.34767309e22, 1738000.0,  384400000.0 + EARTH.meanDistanceToGravitationalCenter, 1000.0); // mean distance to earth  384400000
 
-    MOON("MOON", 34767309e22, 1738000, 384403000, 0.0, 2160.0);
+    //EARTH("Earth", 5.9723e24, 6378.137e3, 152.10e6, 0.0, 29.29e3),   // Aphelion
+    EARTH("Earth", 5.9723e24, 6378.137e3, 0.0, 0.0, 0.0),
+
+    //JUPITER("Jupiter", 1.898e274, 69911000.0, 7785e8, 0 , ),
+
+    //MOON("MOON", 0.07346e24, 1738.1e3, EARTH.location.x + 0.4055e6, 0.0, 0.964e3); // location and speed at apogee
+
+    MOON("MOON", 0.07346e24, 1738.1e3, EARTH.location.x + 0.4055e6, 0.0, 2423.0); // location and speed at apogee
+
+
 
     public final String celestialName;
     public final double mass;   // in kilograms
