@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import nbody.model.*;
@@ -69,6 +70,11 @@ public class NBodyFxGui extends Application {
         stage.show();
     }
 
+    /**
+     * Draw single frame
+     *
+     * @param gc
+     */
     protected void updateFrame(GraphicsContext gc) {
         this.canvasWidth = gc.getCanvas().getWidth();
         this.canvasHeight = gc.getCanvas().getHeight();
@@ -81,10 +87,17 @@ public class NBodyFxGui extends Application {
             System.out.println();
             */
 
+            double otherX = transformer.modelToOtherX(body.location.x);
+            double otherY = transformer.modelToOtherY(body.location.y);
+
+            // draw object circle
             double circleRadius = 2;
             gc.setFill(Color.BLACK);
+            gc.fillOval(otherX - circleRadius, otherY - circleRadius, circleRadius * 2, circleRadius * 2);
 
-            gc.fillOval(transformer.modelToOtherX(body.location.x) - circleRadius, transformer.modelToOtherY(body.location.y) - circleRadius, circleRadius * 2, circleRadius * 2);
+            // draw label
+            Text text = new Text(body.name);
+            gc.fillText(body.name, otherX - (text.getLayoutBounds().getWidth()/2), otherY - circleRadius - (text.getLayoutBounds().getHeight()/2));
         }
 
         solarSystem.update(TIME_SLICE);
@@ -116,8 +129,9 @@ public class NBodyFxGui extends Application {
 
     private Canvas createCanvas() {
         Canvas canvas = new ResizableCanvas();
-        canvas.setOnDragDetected((event) -> this.dragPosStart = new Vector2D(event.getX(), event.getY()));
 
+        // dragging of map
+        canvas.setOnDragDetected((event) -> this.dragPosStart = new Vector2D(event.getX(), event.getY()));
         canvas.setOnMouseDragged((event) -> {
             if (this.dragPosStart != null) {
                 Vector2D dragPosCurrent = new Vector2D(event.getX(), event.getY());
@@ -127,9 +141,9 @@ public class NBodyFxGui extends Application {
                 transformer.setOriginYForOther(transformer.getOriginYForOther() + dragPosCurrent.y);
             }
         });
-
         canvas.setOnMouseReleased((event) -> this.dragPosStart = null);
 
+        // zooming
         canvas.setOnScroll((event) -> {
             if (event.getDeltaY() > 0) {
                 transformer.setScale(transformer.getScale() * 0.9);
