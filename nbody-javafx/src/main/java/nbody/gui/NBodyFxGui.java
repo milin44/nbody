@@ -29,11 +29,13 @@ public class NBodyFxGui extends Application {
      * Number of seconds to update the model with for each iteration
      */
     public static final double TIME_SLICE = 60000/4;
-    //public static final double TIME_SLICE = 1;
+    //public static final double TIME_SLICE = 60000/40;
 
     public static final int BOTTOM_AREA_HEIGHT = 100;
     //public static final double SCALE = 3e6;
     public static final double SCALE = 5e8;
+
+    public static final double OBJECT_RADIUS = 2;
 
     private static final int SEC_IN_MINUTE = 60;
     private static final int SEC_IN_HOUR = SEC_IN_MINUTE * 60;
@@ -91,13 +93,12 @@ public class NBodyFxGui extends Application {
             double otherY = transformer.modelToOtherY(body.location.y);
 
             // draw object circle
-            double circleRadius = 2;
             gc.setFill(Color.BLACK);
-            gc.fillOval(otherX - circleRadius, otherY - circleRadius, circleRadius * 2, circleRadius * 2);
+            gc.fillOval(otherX - OBJECT_RADIUS, otherY - OBJECT_RADIUS, OBJECT_RADIUS * 2, OBJECT_RADIUS * 2);
 
             // draw label
             Text text = new Text(body.name);
-            gc.fillText(body.name, otherX - (text.getLayoutBounds().getWidth()/2), otherY - circleRadius - (text.getLayoutBounds().getHeight()/2));
+            gc.fillText(body.name, otherX - (text.getLayoutBounds().getWidth()/2), otherY - OBJECT_RADIUS - (text.getLayoutBounds().getHeight()/2));
         }
 
         solarSystem.update(TIME_SLICE);
@@ -151,7 +152,6 @@ public class NBodyFxGui extends Application {
                 transformer.setScale(transformer.getScale() * 1.1);
             }
         });
-
         return canvas;
     }
 
