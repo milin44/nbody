@@ -27,12 +27,12 @@ public class NBodyFxGui extends Application {
     /**
      * Number of seconds to update the model with for each iteration
      */
-    //public static final double TIME_SLICE = 60000/4;
-    public static final double TIME_SLICE = 1;
+    public static final double TIME_SLICE = 60000/4;
+    //public static final double TIME_SLICE = 1;
 
     public static final int BOTTOM_AREA_HEIGHT = 100;
-    public static final double SCALE = 3e6;
-    //public static final double SCALE = 5e8;
+    //public static final double SCALE = 3e6;
+    public static final double SCALE = 5e8;
 
     private static final int SEC_IN_MINUTE = 60;
     private static final int SEC_IN_HOUR = SEC_IN_MINUTE * 60;

@@ -2,11 +2,10 @@ package nbody.model;
 
 // https://nssdc.gsfc.nasa.gov/planetary/factsheet
 public enum CelestialBody {
-    //              Mass            Radius          X-Distance          Velocity
-    SUN("Sun",      1.98855e30,     695700000.0,    0,          0,      0),
-    EARTH("Earth",  5.9723e24,      (6378.137e3+6356.752e3)/2.0,     152.10e6,   0.0,    29.29e3),   // Aphelion, avg radius
-
-    MARS("Mars",    0.64171e24,     3396.2e3,       -249.23e6,  0.0,    21.97e3);   // Aphelion
+    //Name          Mass            Radius                          X               Y       Velocity
+    SUN("Sun",      1.98855e30,     695700000.0,                    0,              0,      0),
+    EARTH("Earth",  5.9723e24,      (6378.137e3+6356.752e3)/2.0,    152.10e9,       0.0,    29.29e3),   // Aphelion, avg radius
+    MARS("Mars",    0.64171e24,     3396.2e3,                       -249.23e9,      0.0,    21.97e3);   // Aphelion
 
     //JUPITER("Jupiter", 1.898e274, 69911000.0, 7785e8, 0 , ),
 
