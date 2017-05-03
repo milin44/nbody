@@ -30,10 +30,12 @@ public class NBodyFxGui extends Application {
      */
     public static final double TIME_SLICE = 60000/4;
     //public static final double TIME_SLICE = 60000/40;
+    //public static final double TIME_SLICE = 60000/160;
 
     public static final int BOTTOM_AREA_HEIGHT = 100;
     //public static final double SCALE = 3e6;
     public static final double SCALE = 5e8;
+
 
     public static final double OBJECT_RADIUS = 2;
 

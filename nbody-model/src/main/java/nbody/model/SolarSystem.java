@@ -9,6 +9,8 @@ public class SolarSystem extends BodySystem {
 
     private static CelestialBody[] CELESTIAL_BODIES_IN_SYSTEM = new CelestialBody[] {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO};
 
+    //private static CelestialBody[] CELESTIAL_BODIES_IN_SYSTEM = new CelestialBody[] {SUN, EARTH, MARS};
+
     public SolarSystem() {
         super();
         createSolarSystem();
@@ -19,6 +21,8 @@ public class SolarSystem extends BodySystem {
 
         Arrays.stream(CELESTIAL_BODIES_IN_SYSTEM).forEach((celestialBody) -> {
             final Body body = celestialBody.getAsBody();
+
+            /*
 
 
             // position body at random angle from sun
@@ -37,6 +41,7 @@ public class SolarSystem extends BodySystem {
                 body.velocity.x = x_vel;
                 body.velocity.y = y_vel;
             }
+            */
 
             addBody(body);
         });
