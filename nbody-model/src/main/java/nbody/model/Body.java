@@ -6,9 +6,9 @@ package nbody.model;
  *
  */
 public class Body {
-    public Vector2D location;
-    public Vector2D velocity;
-    public Vector2D acceleration;
+    public Vector3D location;
+    public Vector3D velocity;
+    public Vector3D acceleration;
 
     /** mass in kilograms */
     public double mass;
@@ -21,17 +21,17 @@ public class Body {
 
     public Body() {
         if (acceleration == null) {
-            acceleration = new Vector2D();
+            acceleration = new Vector3D();
         }
         if (velocity == null) {
-            velocity = new Vector2D();
+            velocity = new Vector3D();
         }
         if (location == null) {
-            location = new Vector2D();
+            location = new Vector3D();
         }
     }
 
-    public Body(Vector2D location, Vector2D velocity, double radius, double mass) {
+    public Body(Vector3D location, Vector3D velocity, double radius, double mass) {
         this();
         this.location = location;
         this.velocity = velocity;
@@ -39,15 +39,15 @@ public class Body {
         this.mass = mass;
     }
 
-    public Vector2D getAcceleration() {
+    public Vector3D getAcceleration() {
         return acceleration;
     }
 
-    public Vector2D getVelocity() {
+    public Vector3D getVelocity() {
         return velocity;
     }
 
-    public Vector2D getLocation() {
+    public Vector3D getLocation() {
         return location;
     }
 
@@ -63,8 +63,8 @@ public class Body {
      * @param force
      *
      */
-    public void addAccelerationByForce(Vector2D force) {
-        Vector2D accByForce = new Vector2D(force);
+    public void addAccelerationByForce(Vector3D force) {
+        Vector3D accByForce = new Vector3D(force);
         accByForce.div(mass);
         acceleration.add(accByForce);
     }
@@ -85,7 +85,7 @@ public class Body {
      * Resets acceleration vector so that addAccelerationByGravityForce() can accumulate forces during a new timeslice.
      */
     public void resetAcceleration() {
-        acceleration = new Vector2D();
+        acceleration = new Vector3D();
     }
 
     /**
@@ -103,12 +103,12 @@ public class Body {
      */
     public void updateVelocityAndLocation(double timeSlice) {
         // caluclate final velocity when the time slice has occurred
-        Vector2D oldVelocity = new Vector2D(this.velocity);
+        Vector3D oldVelocity = new Vector3D(this.velocity);
         updateVelocity(timeSlice);
 
         // updateVelocityAndLocation location using average velocity
-        Vector2D changedVelocityAverage = new Vector2D(this.velocity).sub(oldVelocity).div(2.0);
-        Vector2D averageVelocity = new Vector2D(oldVelocity).add(changedVelocityAverage);
+        Vector3D changedVelocityAverage = new Vector3D(this.velocity).sub(oldVelocity).div(2.0);
+        Vector3D averageVelocity = new Vector3D(oldVelocity).add(changedVelocityAverage);
         updateLocation(timeSlice, averageVelocity);
     }
 
@@ -125,16 +125,16 @@ public class Body {
      *
      * @param other
      */
-    protected Vector2D calculateGravitationalForce(Body other) {
+    protected Vector3D calculateGravitationalForce(Body other) {
         // get direction vector
-        Vector2D directionVect = new Vector2D(this.location);
+        Vector3D directionVect = new Vector3D(this.location);
         directionVect.sub(other.location).normalize().mul(-1);
 
         // distance between bodies
         double r = this.location.distance(other.location);
 
         // calculate force
-        Vector2D grativationalForce = new Vector2D(directionVect);
+        Vector3D grativationalForce = new Vector3D(directionVect);
         grativationalForce.mul(Physics.G).mul(this.mass).mul(other.mass).div(r*r);
 
         return grativationalForce;
@@ -146,7 +146,7 @@ public class Body {
      * @param timeSlice
      */
     protected void updateVelocity(double timeSlice) {
-        Vector2D velocityByAcc = new Vector2D(acceleration).mul(timeSlice);
+        Vector3D velocityByAcc = new Vector3D(acceleration).mul(timeSlice);
         velocity.add(velocityByAcc);
     }
 
@@ -156,19 +156,20 @@ public class Body {
      * @param timeSlice the timeslice for which given average velocity should affect the body.
      * @param averageVelocity the average velocity during the timeslice
      */
-    protected void updateLocation(double timeSlice, Vector2D averageVelocity) {
-        Vector2D locationByVelocity = new Vector2D(averageVelocity).mul(timeSlice);
+    protected void updateLocation(double timeSlice, Vector3D averageVelocity) {
+        Vector3D locationByVelocity = new Vector3D(averageVelocity).mul(timeSlice);
         location.add(locationByVelocity);
     }
 
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
+        buf.append(String.format("-----------------------------------------------------------------------")).append('\n');
         buf.append(String.format("\n%s", name)).append('\n');
         buf.append(String.format("mass = %f", mass)).append('\n');
-        buf.append(String.format("acc_x = %f, acc_y = %f", acceleration.x, acceleration.y)).append('\n');
-        buf.append(String.format("vel_x = %f, vel_y = %f", velocity.x, velocity.y)).append('\n');
-        buf.append(String.format("loc_x = %f, loc_y = %f", location.x, location.y)).append('\n');
+        buf.append(String.format("loc_x = %f, loc_y = %f, loc_z = %f", location.x, location.y, location.z)).append('\n');
+        buf.append(String.format("vel_x = %f, vel_y = %f, vel_z = %f", velocity.x, velocity.y, velocity.z)).append('\n');
+        buf.append(String.format("acc_x = %f, acc_y = %f, acc_z = %f", acceleration.x, acceleration.y, acceleration.z)).append('\n');
         return buf.toString();
     }
 }

@@ -73,7 +73,7 @@ public class BodySystemTest {
 
     private Body createEarthBody() {
         Body massive = new Body();
-        massive.location = new Vector2D(0, 0);
+        massive.location = new Vector3D(0, 0, 0);
         massive.mass = CelestialBody.EARTH.mass;
         massive.name = EARTH;
         return massive;
@@ -82,7 +82,7 @@ public class BodySystemTest {
     // 1 kg, 100 meters up, gives g = 9.82
     private Body createKiloBody() {
         Body kilo = new Body();
-        kilo.location = new Vector2D(0, HEIGHT + CelestialBody.EARTH.radius);
+        kilo.location = new Vector3D(0, HEIGHT + CelestialBody.EARTH.radius, 0);
         kilo.mass = 1;
         kilo.name = KILO;
         return kilo;

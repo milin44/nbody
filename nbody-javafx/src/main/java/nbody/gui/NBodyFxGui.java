@@ -9,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -28,13 +27,15 @@ public class NBodyFxGui extends Application {
     /**
      * Number of seconds to update the model with for each iteration
      */
-    public static final double TIME_SLICE = 60000/4;
-    //public static final double TIME_SLICE = 60000/40;
+
+    public static final double TIME_SLICE = 60*60;
+
     //public static final double TIME_SLICE = 60000/160;
 
     public static final int BOTTOM_AREA_HEIGHT = 100;
     //public static final double SCALE = 3e6;
-    public static final double SCALE = 5e8;
+    //public static final double SCALE = 5e8;
+    public static final double SCALE = 5e9;
 
 
     public static final double OBJECT_RADIUS = 2;
@@ -48,7 +49,7 @@ public class NBodyFxGui extends Application {
     private long elapsedTime = 0;
     private double canvasWidth = 0;
     private double canvasHeight = 0;
-    private Vector2D dragPosStart;
+    private Vector3D dragPosStart;
     private Label timeLabel;
 
     private final CoordinatesTransformer transformer = new CoordinatesTransformer();
@@ -63,7 +64,7 @@ public class NBodyFxGui extends Application {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         KeyFrame kf = new KeyFrame(
-                Duration.seconds(1/240.0),           // 240 FPS
+                Duration.seconds(1/5000.0),           // 240 FPS
                 new EventHandler<ActionEvent>() {
                     public void handle(ActionEvent ae) {
                         updateFrame(gc);
@@ -85,11 +86,19 @@ public class NBodyFxGui extends Application {
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (Body body : solarSystem.getBodies()) {
-            /*
+/*
+            if (!body.name.equalsIgnoreCase("SUN")) {
+                System.out.println(body.toString());
+                System.out.println("px:" + transformer.modelToOtherX(body.location.x) + ", py:" + transformer.modelToOtherY(body.location.y));
+                System.out.println();
+            }
+*/
+
+/*
             System.out.println(body.toString());
             System.out.println("px:" + transformer.modelToOtherX(body.location.x) + ", py:" + transformer.modelToOtherY(body.location.y));
             System.out.println();
-            */
+*/
 
             double otherX = transformer.modelToOtherX(body.location.x);
             double otherY = transformer.modelToOtherY(body.location.y);
@@ -134,12 +143,12 @@ public class NBodyFxGui extends Application {
         Canvas canvas = new ResizableCanvas();
 
         // dragging of map
-        canvas.setOnDragDetected((event) -> this.dragPosStart = new Vector2D(event.getX(), event.getY()));
+        canvas.setOnDragDetected((event) -> this.dragPosStart = new Vector3D(event.getX(), event.getY(), 0));
         canvas.setOnMouseDragged((event) -> {
             if (this.dragPosStart != null) {
-                Vector2D dragPosCurrent = new Vector2D(event.getX(), event.getY());
+                Vector3D dragPosCurrent = new Vector3D(event.getX(), event.getY(), 0);
                 dragPosCurrent.sub(this.dragPosStart);
-                dragPosStart = new Vector2D(event.getX(), event.getY());
+                dragPosStart = new Vector3D(event.getX(), event.getY(), 0);
                 transformer.setOriginXForOther(transformer.getOriginXForOther() + dragPosCurrent.x);
                 transformer.setOriginYForOther(transformer.getOriginYForOther() + dragPosCurrent.y);
             }

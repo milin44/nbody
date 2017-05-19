@@ -1,7 +1,6 @@
 package nbody.model;
 
 
-import static java.lang.Math.sqrt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,10 +17,10 @@ public class BodyTest {
     @Before
     public void setUp() {
         body = new Body();
-        body.location = new Vector2D(0, 0);
+        body.location = new Vector3D(0, 0, 0);
         body.mass = BODY_MASS;
         other = new Body();
-        other.location = new Vector2D(0, 0);
+        other.location = new Vector3D(0, 0, 0);
         other.mass = BODY_MASS;
     }
 
@@ -32,11 +31,11 @@ public class BodyTest {
         other.location.x = BODY_DISTANCE;
         other.location.y = 0;
 
-        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        Vector3D bodyForce = body.calculateGravitationalForce(other);
         assertEquals(0, bodyForce.y, 0.01);
         assertEquals(EXPECTED_FORCE, bodyForce.x, 0.01);
 
-        Vector2D otherForce = body.calculateGravitationalForce(other);
+        Vector3D otherForce = body.calculateGravitationalForce(other);
         assertEquals(0, otherForce.y, 0.01);
         assertEquals(EXPECTED_FORCE, otherForce.x, 0.01);
     }
@@ -48,13 +47,31 @@ public class BodyTest {
         other.location.x = 0;
         other.location.y = BODY_DISTANCE;
 
-        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        Vector3D bodyForce = body.calculateGravitationalForce(other);
         assertEquals(0, bodyForce.x, 0.01);
         assertEquals(EXPECTED_FORCE, bodyForce.y, 0.01);
 
-        Vector2D otherForce = body.calculateGravitationalForce(other);
+        Vector3D otherForce = body.calculateGravitationalForce(other);
         assertEquals(0, otherForce.x, 0.01);
         assertEquals(EXPECTED_FORCE, otherForce.y, 0.01);
+    }
+
+    @Test
+    public void calculateGravitationalForceAlongDepthAxis() {
+        body.location.x = 0;
+        body.location.y = 0;
+        body.location.z = 0;
+        other.location.x = 0;
+        other.location.y = 0;
+        other.location.z = BODY_DISTANCE;
+
+        Vector3D bodyForce = body.calculateGravitationalForce(other);
+        assertEquals(0, bodyForce.x, 0.01);
+        assertEquals(EXPECTED_FORCE, bodyForce.z, 0.01);
+
+        Vector3D otherForce = body.calculateGravitationalForce(other);
+        assertEquals(0, otherForce.x, 0.01);
+        assertEquals(EXPECTED_FORCE, otherForce.z, 0.01);
     }
 
     @Test
@@ -63,7 +80,7 @@ public class BodyTest {
         body.location.y = 0;
         other.location.x = Math.sin(Math.toRadians(45)) * BODY_DISTANCE;
         other.location.y = Math.cos(Math.toRadians(45)) * BODY_DISTANCE;
-        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        Vector3D bodyForce = body.calculateGravitationalForce(other);
         assertEquals(EXPECTED_FORCE, bodyForce.length(), 0.01);
     }
 
@@ -73,7 +90,7 @@ public class BodyTest {
         body.location.y = Math.cos(Math.toRadians(225)) * BODY_DISTANCE;;
         other.location.x = 0;
         other.location.y = 0;
-        Vector2D bodyForce = body.calculateGravitationalForce(other);
+        Vector3D bodyForce = body.calculateGravitationalForce(other);
         assertEquals(EXPECTED_FORCE, bodyForce.length(), 0.01);
     }
 
@@ -82,7 +99,7 @@ public class BodyTest {
         Body earth = new Body();
         earth.mass = CelestialBody.EARTH.mass;
         Body oneKg = new Body();
-        oneKg.location = new Vector2D(0, CelestialBody.EARTH.radius);
+        oneKg.location = new Vector3D(0, CelestialBody.EARTH.radius, 0);
         oneKg.mass = 1;
         assertEquals(9.82, Math.abs(oneKg.calculateGravitationalForce(earth).length()), 0.01);
     }
