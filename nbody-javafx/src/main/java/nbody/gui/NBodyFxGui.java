@@ -28,7 +28,7 @@ public class NBodyFxGui extends Application {
      * Number of seconds to update the model with for each iteration
      */
 
-    public static final double TIME_SLICE = 60*60;
+    public static final double TIME_SLICE = 60*30;
 
     //public static final double TIME_SLICE = 60000/160;
 
@@ -47,10 +47,14 @@ public class NBodyFxGui extends Application {
 
     private SolarSystem solarSystem;
     private long elapsedTime = 0;
+    private long startTime;
+    private long frameCount = 0;
+    private long fps;
     private double canvasWidth = 0;
     private double canvasHeight = 0;
     private Vector3D dragPosStart;
     private Label timeLabel;
+    private Label fpsLabel;
 
     private final CoordinatesTransformer transformer = new CoordinatesTransformer();
 
@@ -64,7 +68,7 @@ public class NBodyFxGui extends Application {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         KeyFrame kf = new KeyFrame(
-                Duration.seconds(1/5000.0),           // 240 FPS
+                Duration.millis(0.1),
                 new EventHandler<ActionEvent>() {
                     public void handle(ActionEvent ae) {
                         updateFrame(gc);
@@ -73,6 +77,7 @@ public class NBodyFxGui extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
         stage.show();
+        startTime = System.currentTimeMillis();
     }
 
     /**
@@ -115,6 +120,15 @@ public class NBodyFxGui extends Application {
         solarSystem.update(TIME_SLICE);
         elapsedTime += TIME_SLICE;
         timeLabel.setText(getElapsedTimeAsString(this.elapsedTime));
+
+        frameCount++;
+        fpsLabel.setText("FPS: " + fps);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - startTime >= 1000) {
+            fps = Math.round(frameCount / ((currentTime - startTime)/1000.0));
+            startTime = currentTime;
+            frameCount = 0;
+        }
     }
 
     protected void createBodies() {
@@ -124,6 +138,7 @@ public class NBodyFxGui extends Application {
     private GraphicsContext createGui(Stage stage) {
         BorderPane border = new BorderPane();
         createTimeLabel();
+        createFPSLabel();
         HBox hbox = createHBox();
         border.setBottom(hbox);
         Canvas canvas = createCanvas();
@@ -175,13 +190,19 @@ public class NBodyFxGui extends Application {
         hbox.setSpacing(10);   // Gap between nodes
         hbox.setStyle("-fx-background-color: #336699;");
         hbox.setFillHeight(true);
-        hbox.getChildren().addAll(this.timeLabel);
+        hbox.getChildren().add(this.timeLabel);
+        hbox.getChildren().add(this.fpsLabel);
         return hbox;
     }
 
     private void createTimeLabel() {
         timeLabel = new Label();
         timeLabel.setPrefSize(500, 20);
+    }
+
+    private void createFPSLabel() {
+        fpsLabel = new Label();
+        fpsLabel.setPrefSize(100, 20);
     }
 
     /*
