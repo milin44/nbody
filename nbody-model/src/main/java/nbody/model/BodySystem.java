@@ -35,10 +35,9 @@ public class BodySystem {
             Body current = bodies.get(i);
             for (int j = i+1; j < bodies.size(); j++) {
                 Body other = bodies.get(j);
-                if (other != current) {
-                    current.addAccelerationByGravityForce(other);
-                    other.addAccelerationByGravityForce(current);
-                }
+                current.addAccelerationByGravityForce(other);
+                other.addAccelerationByGravityForce(current);
+
             }
         }
         // update velocity and location for each body
