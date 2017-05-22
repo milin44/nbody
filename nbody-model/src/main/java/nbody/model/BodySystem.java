@@ -37,7 +37,6 @@ public class BodySystem {
                 Body other = bodies.get(j);
                 current.addAccelerationByGravityForce(other);
                 other.addAccelerationByGravityForce(current);
-
             }
         }
         // update velocity and location for each body
