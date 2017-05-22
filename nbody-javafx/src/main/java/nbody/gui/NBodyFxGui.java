@@ -24,44 +24,37 @@ import nbody.model.*;
  * Note that javafx uses a coordinate system with origin top left.
  */
 public class NBodyFxGui extends Application {
-    /**
-     * Number of seconds to update the model with for each iteration
-     */
+    /** Number of seconds to update the model with for each iteration (delta T) */
+    public static final double TIME_SLICE = 60 * 30;
 
-    public static final double TIME_SLICE = 60*30;
+    /** initial scale pixel/meter */
+    public static final double INITIAL_SCALE = 5e9;
 
-    //public static final double TIME_SLICE = 60000/160;
+    /** radius in pixels of body in gui */
+    public static final double BODY_RADIUS_GUI = 2;
 
-    public static final int BOTTOM_AREA_HEIGHT = 100;
-    //public static final double SCALE = 3e6;
-    //public static final double SCALE = 5e8;
-    public static final double SCALE = 5e9;
+    private static final int BOTTOM_AREA_HEIGHT = 100;
 
+    /** bodies in system rendered by gui */
+    private BodySystem bodySystem;
 
-    public static final double OBJECT_RADIUS = 2;
+    /** transforms between coordinates in model and coordinates in gui */
+    private CoordinatesTransformer transformer = new CoordinatesTransformer();
 
-    private static final int SEC_IN_MINUTE = 60;
-    private static final int SEC_IN_HOUR = SEC_IN_MINUTE * 60;
-    private static final int SEC_IN_DAY = SEC_IN_HOUR * 24;
-    private static final int SEC_IN_YEAR = 31556926;
+    /** utility for counting frames per second */
+    private FPSCounter fps = new FPSCounter();
 
-    private SolarSystem solarSystem;
-    private long elapsedTime = 0;
-    private long startTime;
-    private long frameCount = 0;
-    private long fps;
     private double canvasWidth = 0;
     private double canvasHeight = 0;
     private Vector3D dragPosStart;
     private Label timeLabel;
     private Label fpsLabel;
-
-    private final CoordinatesTransformer transformer = new CoordinatesTransformer();
+    private Label scaleLabel;
 
     @Override
     public void start(Stage stage) {
         createBodies();
-        transformer.setScale(SCALE);
+        transformer.setScale(INITIAL_SCALE);
         transformer.setOriginXForOther(500);
         transformer.setOriginYForOther(500);
         GraphicsContext gc = createGui(stage);
@@ -77,7 +70,6 @@ public class NBodyFxGui extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
         stage.show();
-        startTime = System.currentTimeMillis();
     }
 
     /**
@@ -90,14 +82,7 @@ public class NBodyFxGui extends Application {
         this.canvasHeight = gc.getCanvas().getHeight();
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        for (Body body : solarSystem.getBodies()) {
-/*
-            if (!body.name.equalsIgnoreCase("SUN")) {
-                System.out.println(body.toString());
-                System.out.println("px:" + transformer.modelToOtherX(body.location.x) + ", py:" + transformer.modelToOtherY(body.location.y));
-                System.out.println();
-            }
-*/
+        for (Body body : bodySystem.getBodies()) {
 
 /*
             System.out.println(body.toString());
@@ -110,35 +95,28 @@ public class NBodyFxGui extends Application {
 
             // draw object circle
             gc.setFill(Color.BLACK);
-            gc.fillOval(otherX - OBJECT_RADIUS, otherY - OBJECT_RADIUS, OBJECT_RADIUS * 2, OBJECT_RADIUS * 2);
+            gc.fillOval(otherX - BODY_RADIUS_GUI, otherY - BODY_RADIUS_GUI, BODY_RADIUS_GUI * 2, BODY_RADIUS_GUI * 2);
 
             // draw label
             Text text = new Text(body.name);
-            gc.fillText(body.name, otherX - (text.getLayoutBounds().getWidth()/2), otherY - OBJECT_RADIUS - (text.getLayoutBounds().getHeight()/2));
+            gc.fillText(body.name, otherX - (text.getLayoutBounds().getWidth() / 2), otherY - BODY_RADIUS_GUI - (text.getLayoutBounds().getHeight() / 2));
         }
 
-        solarSystem.update(TIME_SLICE);
-        elapsedTime += TIME_SLICE;
-        timeLabel.setText(getElapsedTimeAsString(this.elapsedTime));
-
-        frameCount++;
-        fpsLabel.setText("FPS: " + fps);
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - startTime >= 1000) {
-            fps = Math.round(frameCount / ((currentTime - startTime)/1000.0));
-            startTime = currentTime;
-            frameCount = 0;
-        }
+        bodySystem.update(TIME_SLICE);
+        timeLabel.setText(bodySystem.getElapsedTimeAsString());
+        fpsLabel.setText("FPS: " + fps.countFrame());
+        scaleLabel.setText(String.format("Scale: %d km/pixel", Math.round(transformer.getScale()/1000)));
     }
 
     protected void createBodies() {
-        this.solarSystem = new SolarSystem();
+        this.bodySystem = new SolarSystem();
     }
 
     private GraphicsContext createGui(Stage stage) {
         BorderPane border = new BorderPane();
         createTimeLabel();
         createFPSLabel();
+        createScaleLabel();
         HBox hbox = createHBox();
         border.setBottom(hbox);
         Canvas canvas = createCanvas();
@@ -170,7 +148,7 @@ public class NBodyFxGui extends Application {
         });
         canvas.setOnMouseReleased((event) -> this.dragPosStart = null);
 
-        // zooming
+        // zooming (scaling)
         canvas.setOnScroll((event) -> {
             if (event.getDeltaY() > 0) {
                 transformer.setScale(transformer.getScale() * 0.9);
@@ -181,9 +159,6 @@ public class NBodyFxGui extends Application {
         return canvas;
     }
 
-    /**
-     * Creates an HBox with two buttons for the top region
-     */
     private HBox createHBox() {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(15, 12, 15, 12));
@@ -192,6 +167,7 @@ public class NBodyFxGui extends Application {
         hbox.setFillHeight(true);
         hbox.getChildren().add(this.timeLabel);
         hbox.getChildren().add(this.fpsLabel);
+        hbox.getChildren().add(this.scaleLabel);
         return hbox;
     }
 
@@ -205,24 +181,9 @@ public class NBodyFxGui extends Application {
         fpsLabel.setPrefSize(100, 20);
     }
 
-    /*
-    private Button addZoomOutBtn() {
-        Button btn = new Button("Zoom out");
-        btn.setPrefSize(100, 20);
-        btn.setOnAction((event) -> {
-
-        });
-        return btn;
-    }
-    */
-
-    private String getElapsedTimeAsString(long elapsedSeconds) {
-        long years = elapsedSeconds / SEC_IN_YEAR;
-        long days = (elapsedSeconds % SEC_IN_YEAR) / SEC_IN_DAY;
-        long hours = ( (elapsedSeconds % SEC_IN_YEAR) % SEC_IN_DAY) / SEC_IN_HOUR;
-        long minutes = ( ((elapsedSeconds % SEC_IN_YEAR) % SEC_IN_DAY) % SEC_IN_HOUR) / SEC_IN_MINUTE;
-        long seconds = ( ((elapsedSeconds % SEC_IN_YEAR) % SEC_IN_DAY) % SEC_IN_HOUR) % SEC_IN_MINUTE;
-        return String.format("Years:%08d, Days:%03d, Hours:%02d, Minutes:%02d, Seconds:%02d", years, days, hours, minutes, seconds);
+    private void createScaleLabel() {
+        scaleLabel = new Label();
+        scaleLabel.setPrefSize(300, 20);
     }
 
     public static void main(String[] args) {

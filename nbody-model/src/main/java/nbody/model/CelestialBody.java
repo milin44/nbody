@@ -1,16 +1,16 @@
 package nbody.model;
 
-// https://nssdc.gsfc.nasa.gov/planetary/factsheet
 
 /*
-// https://www.physicsforums.com/threads/parameters-for-solar-system-simulation.723132/
-// https://ssd.jpl.nasa.gov/horizons.cgi
-// https://en.wikipedia.org/wiki/Numerical_model_of_the_Solar_System
 
- 2457875.500000000 = A.D. 2017-May-02 00:00:00.0000 TDB
-km, km /sek, @0
+Mass and radius fetched from:
+    https://nssdc.gsfc.nasa.gov/planetary/factsheet
 
+Initial positions and speed generated from:
+    https://ssd.jpl.nasa.gov/horizons.cgi
 
+    Date: 2457875.500000000 = A.D. 2017-May-02 00:00:00.0000 TDB
+    Units: km, km /sek, @0 (sun barycenter)
 
 
 */
@@ -38,24 +38,6 @@ public enum CelestialBody {
     PLUTO("Pluto",          0.01303E+24,     1187E+3,      1.501099735943540E+09,  -4.752004467812544E+09,   7.428723010835433E+07 , 5.302832537658332E+00,   4.978205559367923E-01, -1.608658326954050E+00);
 
 
-
-    /*
-    // All X:s at Aphelion and min orbital velocity
-
-    //Name                  Mass            Radius                          X               Y       Velocity
-    SUN("Sun",              1.98855e30,     695700000.0,                    0,              0,      0),
-    MERCURY("Mercury",      0.33011e24,     2439.7e3,                       69.82e9,        0.0,    38.86e3),
-    VENUS("Venus",          4.8675e24,      6051.8e3,                       108.94e9,       0.0,    35.26e3),
-    EARTH("Earth",          5.9723e24,      6371.008e3,                     152.10e9,       0.0,    29.29e3),
-    MARS("Mars",            0.64171e24,     3389.5e3,                       249.23e9,       0.0,    21.97e3),
-    JUPITER("Jupiter",      1898.19e24,     69911e3,                        816.62e9,       0.0,    12.44e3),
-    SATURN("Saturn",        568.34e24,      58232e3,                        1514.50e9,      0.0,    9.09e3),
-    URANUS("Uranus",        86.813e24,      25362e3,                        3003.62e9,      0.0,    6.493e3),
-    NEPTUNE("Neptune",      102.413e24,     24622e3,                        4545.67e9,      0.0,    5.37e3),
-    PLUTO("Pluto",          0.01303e24,     1187e3,                         7375.93e9,      0.0,    3.71e3);
-
-*/
-
     public final String celestialName;
     public final double mass;   // kg
     public final double radius; // meters
@@ -63,6 +45,18 @@ public enum CelestialBody {
     public Vector3D velocity; // m/s
 
 
+    /**
+     *
+     * @param celestialName
+     * @param mass      kg
+     * @param radius    m
+     * @param x         m
+     * @param y         m
+     * @param z         m
+     * @param x_vel     km/s
+     * @param y_vel     km/s
+     * @param z_vel     km/s
+     */
     CelestialBody(String celestialName, double mass, double radius, double x, double y, double z, double x_vel, double y_vel, double z_vel) {
         this.celestialName = celestialName;
         this.mass = mass;

@@ -2,7 +2,6 @@ package nbody.gui;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * Implementation of a resizable canvas that changes its size when the parent changes size.

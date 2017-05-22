@@ -1,7 +1,7 @@
 package nbody.model;
 
 /**
- * Implementation of a generic body that moves in a two-dimensional coordinate system.
+ * Implementation of a generic body that moves in a three-dimensional coordinate system.
  * The movement is caused by applying forces on the body.
  *
  */
@@ -13,7 +13,7 @@ public class Body {
     /** mass in kilograms */
     public double mass;
 
-    /** radius in kilometers */
+    /** radius in meters */
     public double radius;
 
     public String name;
