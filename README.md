@@ -82,7 +82,7 @@
         </ol>
 </p>
 
-<b><p>Vectors</p></b>
+<p><b>Vectors</b></p>
 <p>
     At heart of the implementation is a three dimensional vector class (<i>Vector3D</i>) and the class <i>Body</i>. The body class contains three vectors describing an objects location, velocity and acceleration:
 </p>
@@ -96,7 +96,7 @@
 <p>
     The vectors described are not the standard Vector type in java, instead it is a custom implementation to support <a href="https://en.wikipedia.org/wiki/Vector_algebra" target="_blank">vector algebra</a> which makes it possible to do mathematical operations like multiplication and addition on vectors.
 </p>
-<b><p>Graphical interface</p></b>
+<p><b>Graphical interface</b></p>
 <p>
     The gui is a minimal JavaFX application the is used to draw circles that represents the bodies the model. The interface also allows the user to navigate by pressing and dragging the mouse and by using the scroll wheel for zooming.
 </p>
@@ -108,3 +108,7 @@
 <p>
     The complete source for the application can be downloaded from <a href="https://github.com/milin44/nbody" target="_blank">GitHub</a>
 </p>
+
+
+
+
